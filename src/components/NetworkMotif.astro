@@ -1,0 +1,80 @@
+---
+// A hand-placed node-and-edge constellation with diamond nodes: the site's
+// one recurring piece of cover art, tying the deco ornament language to the
+// research subject. Pure static SVG, no runtime JS.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const nodes: Array<{ x: number; y: number; accent?: boolean }> = [
+  { x: 18, y: 36 },
+  { x: 58, y: 14 },
+  { x: 102, y: 44, accent: true },
+  { x: 150, y: 18 },
+  { x: 196, y: 50 },
+  { x: 74, y: 78 },
+  { x: 128, y: 86, accent: true },
+  { x: 34, y: 96 },
+  { x: 178, y: 104 },
+  { x: 96, y: 122 },
+  { x: 146, y: 128 },
+];
+
+const edges: Array<[number, number]> = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [2, 5],
+  [0, 5],
+  [5, 7],
+  [5, 6],
+  [2, 6],
+  [6, 8],
+  [4, 8],
+  [6, 9],
+  [7, 9],
+  [9, 10],
+  [10, 8],
+];
+
+const diamond = (x: number, y: number, r: number) =>
+  `M${x} ${y - r} L${x + r} ${y} L${x} ${y + r} L${x - r} ${y} Z`;
+---
+
+<svg
+  class:list={['motif', className]}
+  viewBox="0 0 214 142"
+  role="img"
+  aria-label="A small network of connected nodes"
+>
+  {edges.map(([a, b]) => {
+    const from = nodes[a]!;
+    const to = nodes[b]!;
+    return <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} />;
+  })}
+  {nodes.map((n) => (
+    <path class:list={[{ accent: n.accent }]} d={diamond(n.x, n.y, n.accent ? 5.5 : 4)} />
+  ))}
+</svg>
+
+<style>
+  .motif line {
+    stroke: var(--accent);
+    stroke-width: 1;
+    opacity: 0.45;
+  }
+
+  .motif path {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.4;
+  }
+
+  .motif path.accent {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+</style>

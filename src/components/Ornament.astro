@@ -1,0 +1,29 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['ornament', className]} aria-hidden="true">
+  <span></span>
+  <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+    <path d="M6 0 12 6 6 12 0 6Z"></path>
+  </svg>
+  <span></span>
+</div>
+
+<style>
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    color: var(--accent);
+  }
+
+  .ornament span {
+    flex: 1;
+    border-top: var(--rule-hairline) solid var(--line);
+  }
+</style>

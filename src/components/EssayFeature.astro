@@ -1,0 +1,56 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../lib/substack';
+
+interface Props {
+  essay: CollectionEntry<'essays'>;
+}
+
+const { essay } = Astro.props;
+const { title, subtitle, url, date, excerpt } = essay.data;
+---
+
+<article class="feature">
+  <p class="kicker">Essay ◆ {formatDate(date)}</p>
+  <h3><a href={url}>{title}</a></h3>
+  {subtitle && <p class="subtitle">{subtitle}</p>}
+  <p class="excerpt prose">{excerpt}</p>
+  <a class="read meta" href={url}>Read on Substack →</a>
+</article>
+
+<style>
+  .feature h3 {
+    font-family: var(--serif);
+    font-size: var(--size-feature);
+    font-weight: 700;
+    line-height: 1.08;
+    margin-top: 0.4rem;
+    max-width: 24ch;
+  }
+
+  .subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-dek);
+    color: var(--ink-soft);
+    margin-top: 0.5rem;
+  }
+
+  .excerpt {
+    margin-top: 0.8rem;
+  }
+
+  .read {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    font-size: var(--size-kicker);
+    letter-spacing: var(--track-caps);
+    color: var(--accent);
+  }
+
+  .read:hover {
+    color: var(--accent-deep);
+  }
+</style>

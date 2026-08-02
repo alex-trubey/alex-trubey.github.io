@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Ornament from '../components/Ornament.astro';
+---
+
+<Base title="404 · Alex Trubey" description="Page not found.">
+  <div class="frame lost">
+    <p class="kicker">404</p>
+    <h1>This page has no fixed position.</h1>
+    <p class="line">It may have moved, or it may never have existed.</p>
+    <Ornament class="lost-orn" />
+    <p><a class="btn" href="/">Back to the front page</a></p>
+  </div>
+</Base>
+
+<style>
+  .lost {
+    max-width: 44rem;
+    padding-block: var(--space-6);
+  }
+
+  .lost h1 {
+    font-family: var(--serif);
+    font-size: var(--size-pagetitle);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.1;
+    margin-top: var(--space-1);
+  }
+
+  .line {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-dek);
+    color: var(--ink-soft);
+    margin-top: var(--space-2);
+  }
+
+  .lost :global(.lost-orn) {
+    margin-block: var(--space-4);
+    max-width: 18rem;
+  }
+</style>

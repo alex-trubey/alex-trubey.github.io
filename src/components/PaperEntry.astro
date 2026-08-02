@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  paper: CollectionEntry<'papers'>;
+}
+
+const { paper } = Astro.props;
+const { title, authors, status, year, venue, links } = paper.data;
+
+const statusLabels = {
+  'working-paper': 'Working paper',
+  'in-preparation': 'In preparation',
+  published: 'Published',
+} as const;
+
+const linkRow = [
+  links.ssrn && { href: links.ssrn, label: 'SSRN' },
+  links.pdf && { href: links.pdf, label: 'PDF' },
+  links.code && { href: links.code, label: 'Code' },
+  links.data && { href: links.data, label: 'Data' },
+].filter((l): l is { href: string; label: string } => Boolean(l));
+---
+
+<article class="paper">
+  <p class="meta">
+    <span class="sc">{statusLabels[status]}</span> · {year}{venue && ` · ${venue}`}
+  </p>
+  <h2>{title}</h2>
+  {authors.length > 1 && <p class="authors meta">With {authors.filter((a) => a !== 'Alex Trubey').join(' and ')}</p>}
+  <div class="abstract prose">
+    <slot />
+  </div>
+  {linkRow.length > 0 && (
+    <p class="links">
+      {linkRow.map((l) => (
+        <a class="btn" href={l.href}>{l.label}</a>
+      ))}
+    </p>
+  )}
+</article>
+
+<style>
+  .paper h2 {
+    font-family: var(--serif);
+    font-size: var(--size-h2);
+    font-weight: 700;
+    line-height: 1.12;
+    max-width: 28ch;
+    margin-top: 0.4rem;
+  }
+
+  .authors {
+    margin-top: 0.35rem;
+  }
+
+  .abstract {
+    margin-top: var(--space-2);
+  }
+
+  .links {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-top: var(--space-3);
+  }
+</style>

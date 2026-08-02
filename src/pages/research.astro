@@ -1,0 +1,117 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Ornament from '../components/Ornament.astro';
+import PaperEntry from '../components/PaperEntry.astro';
+
+const papers = (await getCollection('papers')).sort((a, b) => a.data.order - b.data.order);
+
+// Full treatment only for papers with a public link; the rest appear as
+// title plus one line, which is the house publication rule.
+const isPublic = (p: (typeof papers)[number]) => Boolean(p.data.links.ssrn || p.data.links.pdf);
+
+const publicEntries = await Promise.all(
+  papers.filter(isPublic).map(async (p) => ({ paper: p, Content: (await render(p)).Content }))
+);
+const pipeline = papers.filter((p) => !isPublic(p));
+
+const statusLabels = {
+  'working-paper': 'Working paper',
+  'in-preparation': 'In preparation',
+  published: 'Published',
+} as const;
+---
+
+<Base
+  title="Research · Alex Trubey"
+  description="Working papers and research in progress on networks, information, and media markets."
+  active="research"
+>
+  <div class="frame">
+    <header class="page-head">
+      <p class="kicker">Papers</p>
+      <h1 class="page-title">Research</h1>
+      <p class="lede prose">
+        I work on networks and information: how the pattern of who listens to whom shapes what
+        markets know, what they reward, and who gets ahead.
+      </p>
+    </header>
+
+    {publicEntries.map(({ paper, Content }) => (
+      <div class="entry">
+        <PaperEntry paper={paper}>
+          <Content />
+        </PaperEntry>
+      </div>
+    ))}
+
+    <section class="pipeline">
+      <Ornament class="pipeline-orn" />
+      <h2 class="sc-head">Work in progress</h2>
+      <ul>
+        {pipeline.map((p) => (
+          <li>
+            <p class="meta">
+              <span class="sc">{statusLabels[p.data.status]}</span> · {p.data.year}
+              {p.data.authors.length > 1 &&
+                ` · with ${p.data.authors.filter((a) => a !== 'Alex Trubey').join(' and ')}`}
+            </p>
+            <h3>{p.data.title}</h3>
+            {p.data.oneLine && <p class="oneline prose">{p.data.oneLine}</p>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-dek);
+    color: var(--ink-soft);
+    margin-top: var(--space-2);
+  }
+
+  .entry {
+    padding-block: var(--space-4);
+  }
+
+  .entry + .entry {
+    border-top: var(--rule-hairline) solid var(--line);
+  }
+
+  .pipeline {
+    margin-top: var(--space-3);
+  }
+
+  .pipeline :global(.pipeline-orn) {
+    margin-bottom: var(--space-3);
+  }
+
+  .pipeline ul {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+  }
+
+  .pipeline li + li {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: var(--rule-hairline) solid var(--line);
+  }
+
+  .pipeline h3 {
+    font-family: var(--serif);
+    font-size: var(--size-h3);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-top: 0.3rem;
+  }
+
+  .oneline {
+    margin-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+</style>

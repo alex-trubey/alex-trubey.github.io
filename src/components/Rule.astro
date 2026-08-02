@@ -1,0 +1,27 @@
+---
+interface Props {
+  variant?: 'double' | 'thick' | 'hairline';
+  class?: string;
+}
+
+const { variant = 'double', class: className } = Astro.props;
+---
+
+<div class:list={['rule', `rule--${variant}`, className]} aria-hidden="true"></div>
+
+<style>
+  /* Thick-over-thin: the classic editorial section rule. */
+  .rule--double {
+    border-top: var(--rule-thick) solid var(--ink);
+    border-bottom: var(--rule-hairline) solid var(--ink);
+    height: 4px;
+  }
+
+  .rule--thick {
+    border-top: var(--rule-thick) solid var(--ink);
+  }
+
+  .rule--hairline {
+    border-top: var(--rule-hairline) solid var(--line);
+  }
+</style>

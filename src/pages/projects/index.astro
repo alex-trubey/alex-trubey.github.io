@@ -1,0 +1,131 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Ornament from '../../components/Ornament.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const standaloneEntries = await Promise.all(
+  projects
+    .filter((p) => p.data.standalone)
+    .map(async (p) => ({ project: p, Content: (await render(p)).Content }))
+);
+const companions = projects.filter((p) => !p.data.standalone);
+---
+
+<Base
+  title="Projects · Alex Trubey"
+  description="Standalone projects and paper companion code: interactive network maps and replication archives."
+  active="projects"
+>
+  <div class="frame">
+    <header class="page-head">
+      <p class="kicker">Built things</p>
+      <h1 class="page-title">Projects</h1>
+    </header>
+
+    {standaloneEntries.map(({ project, Content }) => (
+      <article class="standalone">
+        <p class="kicker">Project ◆ {project.data.year}</p>
+        <h2>
+          <a href={project.data.live ?? project.data.repo}>{project.data.title}</a>
+        </h2>
+        <p class="tagline">{project.data.tagline}</p>
+        <div class="body prose">
+          <Content />
+        </div>
+        <p class="links">
+          {project.data.live && <a class="btn" href={project.data.live}>Visit</a>}
+          {project.data.repo && <a class="btn" href={project.data.repo}>Code</a>}
+        </p>
+      </article>
+    ))}
+
+    {companions.length > 0 && (
+      <section class="companions">
+        <Ornament class="comp-orn" />
+        <h2 class="sc-head">Paper companions</h2>
+        <ul>
+          {companions.map((p) => (
+            <li>
+              <h3>{p.data.title}</h3>
+              <p class="tagline small">{p.data.tagline}</p>
+              <p class="meta comp-links">
+                {p.data.repo && <a href={p.data.repo}>Code</a>}
+                {p.data.paper && (
+                  <>
+                    {' · '}
+                    <a href="/research/">See the paper →</a>
+                  </>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .standalone {
+    padding-block: var(--space-3) var(--space-5);
+  }
+
+  .standalone h2 {
+    font-family: var(--serif);
+    font-size: var(--size-feature);
+    font-weight: 700;
+    line-height: 1.08;
+    margin-top: 0.4rem;
+    max-width: 20ch;
+  }
+
+  .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-dek);
+    color: var(--ink-soft);
+    margin-top: 0.5rem;
+  }
+
+  .tagline.small {
+    font-size: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .body {
+    margin-top: var(--space-2);
+  }
+
+  .links {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-top: var(--space-3);
+  }
+
+  .companions :global(.comp-orn) {
+    margin-bottom: var(--space-3);
+  }
+
+  .companions ul {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+  }
+
+  .companions h3 {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .comp-links {
+    margin-top: 0.4rem;
+  }
+
+  .comp-links a {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import MastheadNav from '../components/MastheadNav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  active?: 'research' | 'writing' | 'projects' | 'about';
+  /** The cover composes its own masthead, so it suppresses the standard nav bar. */
+  cover?: boolean;
+}
+
+const { title, description, active, cover = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Alex Trubey" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="generator" content={Astro.generator} />
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-sc" />
+    <Font cssVariable="--font-sans" preload />
+    <!-- GoatCounter analytics: once the account exists, add here:
+    <script data-goatcounter="https://CODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    -->
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    {!cover && <MastheadNav active={active} />}
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

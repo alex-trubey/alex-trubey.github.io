@@ -1,0 +1,63 @@
+---
+import Rule from './Rule.astro';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { href: 'mailto:ajtrubey@gmail.com', label: 'ajtrubey@gmail.com' },
+  { href: 'https://github.com/alex-trubey', label: 'GitHub' },
+  { href: 'https://www.linkedin.com/in/alex-trubey/', label: 'LinkedIn' },
+  { href: 'https://alextrubey.substack.com', label: 'Substack' },
+  { href: 'https://x.com/alextrubey01', label: 'X' },
+];
+---
+
+<footer class="frame">
+  <Rule variant="double" />
+  <div class="row links">
+    {links.map((l, i) => (
+      <>
+        {i > 0 && <span class="sep" aria-hidden="true">·</span>}
+        <a href={l.href}>{l.label}</a>
+      </>
+    ))}
+  </div>
+  <div class="row colophon">
+    <span>Set in Bodoni Moda and Jost · Built in Toronto</span>
+    <span>© {year} Alex Trubey</span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: var(--space-6);
+    padding-bottom: var(--space-4);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: var(--space-2);
+    font-family: var(--sans);
+    font-size: var(--size-meta);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+  }
+
+  .sep {
+    color: var(--accent);
+  }
+
+  .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-top: var(--space-2);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-meta);
+    color: var(--ink-faint);
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { formatDate, type SubstackPost } from '../lib/substack';
+
+interface Props {
+  posts: SubstackPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ol class="posts">
+  {posts.map((post) => (
+    <li>
+      <a href={post.url}>
+        <span class="date meta">{formatDate(post.date)}</span>
+        <span class="text">
+          <span class="title">{post.title}</span>
+          {post.subtitle && <span class="subtitle">{post.subtitle}</span>}
+        </span>
+      </a>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .posts {
+    list-style: none;
+    padding: 0;
+  }
+
+  .posts li + li {
+    border-top: var(--rule-hairline) solid var(--line);
+  }
+
+  .posts a {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-2);
+    align-items: baseline;
+    padding-block: 0.85rem;
+  }
+
+  .posts a:hover .title {
+    color: var(--accent);
+  }
+
+  .date {
+    white-space: nowrap;
+  }
+
+  .title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-meta);
+    color: var(--ink-soft);
+    margin-top: 0.15rem;
+  }
+
+  @media (max-width: 540px) {
+    .posts a {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+  }
+</style>

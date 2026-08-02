@@ -1,0 +1,61 @@
+/* Design tokens: the whole visual system hangs off this file. */
+
+:root {
+  /* ---- Palette: ivory paper, near-black ink, one jewel accent ---- */
+  --paper: #f7f3ec;
+  --paper-deep: #efe9dd; /* panel fills a half-step below the page */
+  --ink: #191714;
+  --ink-soft: #57514a;
+  --ink-faint: #8a8378; /* folios, metadata */
+  --line: #cdc5b6; /* hairlines on paper */
+
+  /* Accent candidate 1 (active): sapphire */
+  --accent: #1f4fa8;
+  --accent-deep: #163a7d;
+  --accent-tint: #e3eaf7;
+
+  /* Accent candidate 2: emerald
+  --accent: #0e6b4f;
+  --accent-deep: #0a523c;
+  --accent-tint: #dfeee8; */
+
+  /* Accent candidate 3: oxblood
+  --accent: #5e1224;
+  --accent-deep: #470d1b;
+  --accent-tint: #f2e2e6; */
+
+  /* ---- Type families (--font-* variables come from the Astro Fonts API) ---- */
+  --serif: var(--font-display);
+  --sc: var(--font-sc);
+  --sans: var(--font-sans);
+
+  /* ---- Type scale: steep display jumps, magazine-cover style ---- */
+  --size-folio: 0.72rem;
+  --size-kicker: 0.72rem;
+  --size-meta: 0.85rem;
+  --size-body: 1.05rem;
+  --size-dek: 1.2rem;
+  --size-h3: 1.45rem;
+  --size-h2: clamp(1.9rem, 3vw, 2.4rem);
+  --size-feature: clamp(1.8rem, 3.4vw, 2.7rem);
+  --size-standfirst: clamp(1.4rem, 2.9vw, 2.1rem);
+  --size-pagetitle: clamp(2.5rem, 5.5vw, 4rem);
+  --size-masthead: clamp(3.2rem, 12.5vw, 9.5rem);
+
+  --track-caps: 0.16em;
+  --track-caps-wide: 0.28em;
+
+  /* ---- Spacing ---- */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+
+  /* ---- Rules and measure ---- */
+  --rule-hairline: 1px;
+  --rule-thick: 3px;
+  --measure: 62ch;
+  --frame-max: 1100px;
+}

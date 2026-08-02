@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EssayFeature from '../components/EssayFeature.astro';
+import Ornament from '../components/Ornament.astro';
+import PostList from '../components/PostList.astro';
+import Rule from '../components/Rule.astro';
+import { getSubstackPosts, normalizeUrl } from '../lib/substack';
+
+const essays = (await getCollection('essays')).sort((a, b) => a.data.rank - b.data.rank);
+const posts = await getSubstackPosts(10);
+
+const curated = new Set(essays.map((e) => normalizeUrl(e.data.url)));
+const rest = posts.filter((p) => !curated.has(normalizeUrl(p.url)));
+---
+
+<Base
+  title="Writing · Alex Trubey"
+  description="Essays from No Fixed Position: academia, athletics, and the rest of it."
+  active="writing"
+>
+  <div class="frame">
+    <header class="page-head">
+      <p class="kicker">No Fixed Position</p>
+      <h1 class="page-title">Writing</h1>
+      <p class="lede prose">
+        I write at <a href="https://alextrubey.substack.com">No Fixed Position</a>, a Substack
+        about academia, athletics, and the rest of it. Start with these.
+      </p>
+    </header>
+
+    <section class="features">
+      {essays.map((essay, i) => (
+        <>
+          {i > 0 && <Ornament class="feature-orn" />}
+          <EssayFeature essay={essay} />
+        </>
+      ))}
+    </section>
+
+    {rest.length > 0 && (
+      <section class="recent">
+        <Rule variant="double" />
+        <h2 class="sc-head recent-head">All recent posts</h2>
+        <PostList posts={rest} />
+      </section>
+    )}
+
+    <p class="subscribe">
+      <a class="btn" href="https://alextrubey.substack.com/subscribe">Subscribe on Substack</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--size-dek);
+    color: var(--ink-soft);
+    margin-top: var(--space-2);
+  }
+
+  .features {
+    padding-block: var(--space-3) var(--space-5);
+    max-width: 46rem;
+  }
+
+  .features :global(.feature-orn) {
+    margin-block: var(--space-4);
+  }
+
+  .recent-head {
+    padding-block: var(--space-2) var(--space-1);
+  }
+
+  .subscribe {
+    margin-top: var(--space-4);
+  }
+</style>
