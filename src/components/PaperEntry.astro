@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { paper } = Astro.props;
-const { title, authors, status, year, venue, links } = paper.data;
+const { title, authors, status, year, updated, venue, links, note } = paper.data;
 
 const statusLabels = {
   'working-paper': 'Working paper',
@@ -14,33 +14,54 @@ const statusLabels = {
   published: 'Published',
 } as const;
 
+// "2024, updated 2026" when a paper has been revised since its first version.
+const dateLabel = updated && updated !== year ? `${year}, updated ${updated}` : `${year}`;
+const coauthors = authors.filter((a) => a !== 'Alex Trubey').join(' and ');
+
+type Link = { href: string; label: string; download?: boolean };
 const linkRow = [
+  links.pdf && { href: links.pdf, label: 'Download PDF', download: true },
   links.ssrn && { href: links.ssrn, label: 'SSRN' },
-  links.pdf && { href: links.pdf, label: 'PDF' },
   links.code && { href: links.code, label: 'Code' },
   links.data && { href: links.data, label: 'Data' },
-].filter((l): l is { href: string; label: string } => Boolean(l));
+].filter((l): l is Link => Boolean(l));
 ---
 
-<article class="paper">
+<article class="paper" id={paper.id}>
   <p class="meta">
-    <span class="sc">{statusLabels[status]}</span> · {year}{venue && ` · ${venue}`}
+    <span class="sc">{statusLabels[status]}</span> · {dateLabel}{venue && ` · ${venue}`}
   </p>
   <h2>{title}</h2>
-  {authors.length > 1 && <p class="authors meta">With {authors.filter((a) => a !== 'Alex Trubey').join(' and ')}</p>}
-  <div class="abstract prose">
-    <slot />
-  </div>
-  {linkRow.length > 0 && (
-    <p class="links">
-      {linkRow.map((l) => (
-        <a class="btn" href={l.href}>{l.label}</a>
-      ))}
-    </p>
+  {coauthors && <p class="authors meta">With {coauthors}</p>}
+
+  <details class="abstract">
+    <summary>Abstract</summary>
+    <div class="abstract-body prose">
+      <slot />
+    </div>
+  </details>
+
+  {(linkRow.length > 0 || note) && (
+    <div class="foot">
+      {linkRow.length > 0 && (
+        <p class="links">
+          {linkRow.map((l) => (
+            <a class="btn" href={l.href} download={l.download || undefined}>
+              {l.label}
+            </a>
+          ))}
+        </p>
+      )}
+      {note && <p class="note meta">{note}</p>}
+    </div>
   )}
 </article>
 
 <style>
+  .paper {
+    scroll-margin-top: var(--space-4);
+  }
+
   .paper h2 {
     font-family: var(--serif);
     font-size: var(--size-h2);
@@ -54,14 +75,63 @@ const linkRow = [
     margin-top: 0.35rem;
   }
 
+  /* Collapsible abstract: the toggle borrows the kicker voice, with a
+     filled diamond when closed and a hollow one when open. */
   .abstract {
     margin-top: var(--space-2);
+  }
+
+  .abstract summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    font-family: var(--sans);
+    font-size: var(--size-kicker);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    color: var(--accent);
+    transition: color 0.15s ease;
+  }
+
+  .abstract summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .abstract summary::before {
+    content: '\25c6'; /* ◆ */
+    font-size: 0.75em;
+  }
+
+  .abstract[open] summary::before {
+    content: '\25c7'; /* ◇ */
+  }
+
+  .abstract summary:hover {
+    color: var(--accent-deep);
+  }
+
+  .abstract-body {
+    margin-top: var(--space-2);
+  }
+
+  .foot {
+    margin-top: var(--space-3);
   }
 
   .links {
     display: flex;
     gap: 0.7rem;
     flex-wrap: wrap;
-    margin-top: var(--space-3);
+  }
+
+  .note {
+    margin-top: var(--space-2);
+    font-style: italic;
+    font-family: var(--serif);
+    color: var(--ink-faint);
   }
 </style>

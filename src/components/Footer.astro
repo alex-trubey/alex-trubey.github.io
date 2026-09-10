@@ -22,10 +22,7 @@ const links = [
       </>
     ))}
   </div>
-  <div class="row colophon">
-    <span>Set in Bodoni Moda and Jost · Built in Toronto</span>
-    <span>© {year} Alex Trubey</span>
-  </div>
+  <p class="row colophon">© {year} Alex Trubey</p>
 </footer>
 
 <style>
@@ -50,10 +47,6 @@ const links = [
   }
 
   .colophon {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.6rem;
     margin-top: var(--space-2);
     font-family: var(--serif);
     font-style: italic;

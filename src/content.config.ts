@@ -1,10 +1,11 @@
 import { defineCollection, reference, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-// Papers render fully (abstract + link row) only when they carry a public
-// link (SSRN or PDF). Everything else appears as title plus one line, which
-// enforces the house rule: a paper is featured once it is publicly posted,
-// not before.
+// A paper with an abstract (a non-empty body) has a draft and renders fully
+// on /research: collapsible abstract plus a link row. A paper without one
+// appears under "Work in progress" as title plus oneLine. Papers get a PDF
+// button only once `links.pdf` is set, so a draft can be listed before it
+// is ready to hand out.
 const papers = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/papers' }),
   schema: z.object({
@@ -12,8 +13,13 @@ const papers = defineCollection({
     authors: z.array(z.string()).default(['Alex Trubey']),
     status: z.enum(['working-paper', 'in-preparation', 'published']),
     year: z.number(),
+    // Year of the latest revision, shown as "2024, updated 2026".
+    updated: z.number().optional(),
     venue: z.string().optional(),
+    // One line for the work-in-progress list (papers without an abstract).
     oneLine: z.string().optional(),
+    // Small note under the link row, e.g. "Draft available on request."
+    note: z.string().optional(),
     links: z
       .object({
         ssrn: z.string().url().optional(),

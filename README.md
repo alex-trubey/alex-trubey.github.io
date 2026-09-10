@@ -15,9 +15,12 @@ npm run preview   # serve the production build locally
 ## Where things live
 
 - `src/content/papers/` — one markdown file per paper. Body = abstract. A paper
-  renders fully (abstract + link buttons) only when `links.ssrn` or `links.pdf`
-  is set; otherwise it appears under "Work in progress" as title + `oneLine`.
-  That is the house rule: papers get featured once publicly posted, not before.
+  with an abstract (any draft, posted or not) renders fully on /research: a
+  collapsible abstract plus a link row. A paper with no abstract appears under
+  "Work in progress" as title + `oneLine`. `links.pdf` adds a "Download PDF"
+  button (files live in `public/papers/`); set it only once the draft is ready
+  to hand out. `note` renders a small line under the buttons, e.g. "Draft
+  available on request." `updated` renders the year as "2024, updated 2026".
 - `src/content/essays/` — hand-curated featured essays for /writing and the
   cover. `url` must match the Substack permalink (it dedupes against the RSS
   list). Excerpts are hand-written.
@@ -28,8 +31,9 @@ npm run preview   # serve the production build locally
   occasionally during normal maintenance.
 - `src/styles/tokens.css` — the whole design system: palette (three accent
   candidates, sapphire active), type scale, spacing, rules.
-- `public/cv/alex-trubey-cv.pdf` — copied from
-  `~/Documents/Career/` when the CV updates.
+- `public/cv/alex-trubey-cv.pdf` — copied from the latest `~/Documents/Career/`
+  CV PDF when the CV updates (last: `2026_09 Academic_CV.pdf`, 2026-09-10).
+- `public/papers/` — paper PDFs served by the "Download PDF" buttons.
 
 ## Fonts
 
